@@ -1,6 +1,6 @@
+import RPi.GPIO as IO
 from qmc5883l import *
 class Compass:
-    
     def __init__(self):
         self.sensor = QMC5883L(output_data_rate=ODR_100HZ)
         self.sensor.declination = -2.11
@@ -18,3 +18,15 @@ class Compass:
 
     def get_true_bearing(self):
         return self.sensor.get_bearing()
+
+
+class IRsenor:
+    def __init__(self, pin):
+        self.pin = pin
+        IO.setwarnings(False)
+        IO.setmode(IO.BOARD)
+        IO.setup(pin, IO.IN)
+
+    def detects_white(self):
+        return not IO.input(self.pin)
+
