@@ -1,2 +1,9 @@
+from components import *
 class Robot:
-    pass
+    def __init__(self):
+        compass = Compass()
+        
+
+
+
+        
