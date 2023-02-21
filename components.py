@@ -94,3 +94,36 @@ class Motor:
 
     def shutdown(self):
         self.pwm.stop()
+
+
+class DistanceSensor:
+    '''Dummy class'''
+    def get_Distnce():
+        distance = 0
+        return distance
+
+
+class ColourSensor:
+    '''Dummy class'''
+    def detects_colour():
+        blue, green, red = True, False, False
+        if blue:
+            return 'Blue'
+        elif green:
+            return 'Green'
+        elif red:
+            return 'Red'
+        else:
+            return False
+
+class Encoder:
+    '''Dummy class'''
+    def __init__(self):
+        self.distance = 0
+
+    def reset(self):
+        self.distance = 0
+
+    def get_distance_moved(self):
+        return self.distance
+    
