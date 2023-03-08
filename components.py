@@ -98,7 +98,7 @@ class Motor:
 
 class DistanceSensor:
     '''Dummy class'''
-    def get_Distnce():
+    def get_distance():
         distance = 0
         return distance
 
