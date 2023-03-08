@@ -219,8 +219,6 @@ class Robot:
                 self.stop()
                 break
 
-    def run_elevated_arena(self):
-        self.line_follow(stop_color='Blue')
     
     def run_7_segment_number_constructing_arena(self):
         NumberEdges = {
