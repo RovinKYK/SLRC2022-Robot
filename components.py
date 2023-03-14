@@ -30,7 +30,7 @@ class IRSensor:
         IO.setup(pin, IO.IN)
 
     def detects_white(self):
-        return not IO.input(self.pin)
+        return int(not IO.input(self.pin))
 
 
 class Motor:

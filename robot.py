@@ -14,14 +14,14 @@ class Robot:
         self.left_dist_sensor = DistanceSensor(7,8)
         self.right_dist_sensor = DistanceSensor(37,38)
 
-        self.left_IR1 = IRSensor(1)
-        self.left_IR2 = IRSensor(1)
-        self.left_IR3 = IRSensor(1)
-        self.left_IR4 = IRSensor(1)
-        self.right_IR1 = IRSensor(1)
-        self.right_IR2 = IRSensor(1)
-        self.right_IR3 = IRSensor(1)
-        self.right_IR4 = IRSensor(1)
+        self.left_IR1 = IRSensor(3)
+        self.left_IR2 = IRSensor(5)
+        self.left_IR3 = IRSensor(7)
+        self.left_IR4 = IRSensor(8)
+        self.right_IR1 = IRSensor(10)
+        self.right_IR2 = IRSensor(11)
+        self.right_IR3 = IRSensor(12)
+        self.right_IR4 = IRSensor(3)
 
         self.curr_dir=0 # 0=north, 1=east, 2=south, 3=west   This will be useful for the grid areas
 
