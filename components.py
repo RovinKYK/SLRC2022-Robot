@@ -1,4 +1,4 @@
-import RPi.IO as IO
+import RPi.GPIO as IO
 import time
 from qmc5883l import *
 
@@ -101,9 +101,9 @@ class DistanceSensor:
         self.trig_pin = trig_pin
         self.echo_pin = echo_pin
 
+        IO.setmode(IO.BOARD)
         IO.setup(self.trig_pin, IO.OUT)
         IO.setup(self.echo_pin, IO.IN)
-        IO.setmode(IO.BOARD)
 
     def get_distance(self):
         IO.output(self.trig_pin, True)
