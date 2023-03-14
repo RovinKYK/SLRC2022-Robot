@@ -97,9 +97,31 @@ class Motor:
 
 
 class DistanceSensor:
-    '''Dummy class'''
-    def get_distance():
-        distance = 0
+    def __init__(self, trig_pin, echo_pin):
+        self.trig_pin = trig_pin
+        self.echo_pin = echo_pin
+
+        IO.setup(self.trig_pin, IO.OUT)
+        IO.setup(self.echo_pin, IO.IN)
+        IO.setmode(IO.BOARD)
+
+    def get_distance(self):
+        IO.output(self.trig_pin, True)
+        time.sleep(0.00001)
+        IO.output(self.trig_pin, False)
+    
+        StartTime = time.time()
+        StopTime = time.time()
+        
+        while IO.input(self.echo_pin) == 0:
+            StartTime = time.time()
+    
+        while IO.input(self.echo_pin) == 1:
+            StopTime = time.time()
+    
+        TimeElapsed = StopTime - StartTime
+        distance = (TimeElapsed * 34300) / 2
+    
         return distance
 
 
@@ -111,7 +133,7 @@ class ColourSensor:
         
         self.num_cycles = 10
 
-        IO.setmode(IO.BCM)
+        IO.setmode(IO.BOARD)
         IO.setup(self.output_pin,IO.IN, pull_up_down=IO.PUD_UP)
         IO.setup(self.sel_pin1,IO.OUT)
         IO.setup(self.sel_pin2,IO.OUT)
