@@ -1,4 +1,4 @@
-import RPi.GPIO as IO
+import RPi.IO as IO
 import time
 from qmc5883l import *
 
@@ -104,26 +104,65 @@ class DistanceSensor:
 
 
 class ColourSensor:
-    '''Dummy class'''
-    def detects_colour():
-        blue, green, red = True, False, False
-        if blue:
-            return 'Blue'
-        elif green:
-            return 'Green'
-        elif red:
+    def __init__(self, sel_pin1, sel_pin2, output_pin):
+        self.sel_pin1 = sel_pin1
+        self.sel_pin2 = sel_pin2
+        self.output_pin = output_pin
+        
+        self.num_cycles = 10
+
+        IO.setmode(IO.BCM)
+        IO.setup(self.output_pin,IO.IN, pull_up_down=IO.PUD_UP)
+        IO.setup(self.sel_pin1,IO.OUT)
+        IO.setup(self.sel_pin2,IO.OUT)
+
+    def detects_colour(self):
+        IO.output(self.sel_pin1,IO.LOW)
+        IO.output(self.sel_pin2,IO.LOW)
+        time.sleep(0.3)
+        start = time.time()
+        for impulse_count in range(self.num_cycles):
+            IO.wait_for_edge(self.output_pin, IO.FALLING)
+        duration = time.time() - start 
+        red  = self.num_cycles / duration   
+    
+        IO.output(self.sel_pin1,IO.LOW)
+        IO.output(self.sel_pin2,IO.HIGH)
+        time.sleep(0.3)
+        start = time.time()
+        for impulse_count in range(self.num_cycles):
+            IO.wait_for_edge(self.output_pin, IO.FALLING)
+        duration = time.time() - start
+        blue = self.num_cycles / duration
+        
+        IO.output(self.sel_pin1,IO.HIGH)
+        IO.output(self.sel_pin2,IO.HIGH)
+        time.sleep(0.3)
+        start = time.time()
+        for impulse_count in range(self.num_cycles):
+            IO.wait_for_edge(self.output_pin, IO.FALLING)
+        duration = time.time() - start
+        green = self.num_cycles / duration
+        
+        if green<7000 and blue<7000 and red>12000:
             return 'Red'
+        elif red<12000 and  blue<12000 and green>12000:
+            return 'Green'
+        elif green<7000 and red<7000 and blue>12000:
+            return 'Blue'
         else:
+        #elif red>10000 and green>10000 and blue>10000:
             return False
 
-class Encoder:
-    '''Dummy class'''
-    def __init__(self):
-        self.distance = 0
 
-    def reset(self):
-        self.distance = 0
+    class Encoder:
+        '''Dummy class'''
+        def __init__(self):
+            self.distance = 0
 
-    def get_distance_moved(self):
-        return self.distance
+        def reset(self):
+            self.distance = 0
+
+        def get_distance_moved(self):
+            return self.distance
     
