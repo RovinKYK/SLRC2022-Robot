@@ -12,7 +12,7 @@ class Robot:
 
         #self.compass = Compass()
         self.encoder = Encoder(3)
-        #self.colour_sensor = ColourSensor()
+        self.colour_sensor = ColourSensor(3,5,7)
 
         #self.front_dist_sensor = DistanceSensor()
         self.left_dist_sensor = DistanceSensor(7,8)
