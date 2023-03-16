@@ -9,11 +9,15 @@ robot = Robot()
 
 def main():
     print("hello world")
+<<<<<<< HEAD
     IO.setmode(IO.BOARD)
     IO.setup(40, IO.OUT)
     IO.output(40, IO.HIGH)
 
     test_IR_Sensors()
+=======
+    test_encoders()
+>>>>>>> 3f5d24a42a54575096205cef284ae09da1bca800
     
 def test_distance_sensors():
     while True:
@@ -35,6 +39,11 @@ def test_IR_Sensors():
             robot.right_IR3.detects_white(),
             robot.right_IR4.detects_white())
         time.sleep(1)
+
+def test_encoders():
+    while True:
+        print(robot.encoder.get_distance_moved())
+        time.sleep(5)
 
 if __name__ == "__main__":
     main()
