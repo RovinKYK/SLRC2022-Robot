@@ -8,7 +8,7 @@ robot = Robot()
 
 def main():
     print("hello world")
-    test_IR_Sensors()
+    test_encoders()
     
 def test_distance_sensors():
     while True:
@@ -30,6 +30,11 @@ def test_IR_Sensors():
             robot.right_IR3.detects_white(),
             robot.right_IR4.detects_white())
         time.sleep(1)
+
+def test_encoders():
+    while True:
+        print(robot.encoder.get_distance_moved())
+        time.sleep(5)
 
 if __name__ == "__main__":
     main()
