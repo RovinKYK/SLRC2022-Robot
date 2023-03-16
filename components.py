@@ -177,14 +177,29 @@ class ColourSensor:
             return False
 
 
-    class Encoder:
-        '''Dummy class'''
-        def __init__(self):
-            self.distance = 0
+class Encoder:
+    def __init__(self, pin):
+        self.pin = pin
+        self.debounce_time = 0.035
+        self.distance_per_count = 2.522 * 10
 
-        def reset(self):
-            self.distance = 0
+        IO.setmode(IO.BOARD)
+        IO.setup(pin, IO.IN)
 
-        def get_distance_moved(self):
-            return self.distance
+        self.counter = 0
+        self.last_time = time.time()
+
+        IO.add_event_detect(pin, IO.RISING)
+        IO.add_event_callback(pin, self.increment)
+
+    def increment(self, channel):
+        if ((time.time() - self.last_time) > self.debounce_time):
+            self.counter += 1
+            self.last_time = time.time()
+
+    def reset_distance(self):
+        self.counter = 0
+
+    def get_distance_moved(self):
+        return self.distance_per_count * self.counter
     
