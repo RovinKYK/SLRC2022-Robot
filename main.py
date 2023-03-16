@@ -1,5 +1,6 @@
 from robot import Robot
 import time
+import RPi.GPIO as IO
 robot = Robot()
 
 #Helper functions for tasks
@@ -8,6 +9,10 @@ robot = Robot()
 
 def main():
     print("hello world")
+    IO.setmode(IO.BOARD)
+    IO.setup(40, IO.OUT)
+    IO.output(40, IO.HIGH)
+
     test_IR_Sensors()
     
 def test_distance_sensors():
