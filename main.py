@@ -1,5 +1,6 @@
 from robot import Robot
 import time
+import RPi.GPIO as IO
 robot = Robot()
 
 #Helper functions for tasks
@@ -32,8 +33,13 @@ def test_IR_Sensors():
         time.sleep(1)
 
 def test_encoders():
+    a=0
+    robot.encoder.reset_distance()
     while True:
-        print(robot.encoder.get_distance_moved())
+        b=robot.encoder.get_distance_moved()
+        print("AA")
+        print(b-a, b)
+        a=b
         time.sleep(5)
 
 def test_colour_sensor():

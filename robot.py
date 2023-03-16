@@ -4,11 +4,15 @@ from components import *
 class Robot:
     def __init__(self):
         '''self.left_motor = Motor(1,1,1)
-        self.right_motor = Motor(1,1,1)'''
+        self.right_motor = Motor(1,1,1)
 
         self.compass = Compass()
+        self.colour_sensor = ColourSensor()
+        self.right_motor = Motor(1,1,1)'''
+
+        #self.compass = Compass()
         self.encoder = Encoder(3)
-        self.colour_sensor = ColourSensor(3,5,7)
+        #self.colour_sensor = ColourSensor()
 
         #self.front_dist_sensor = DistanceSensor()
         self.left_dist_sensor = DistanceSensor(7,8)
