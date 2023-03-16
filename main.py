@@ -8,7 +8,7 @@ robot = Robot()
 
 def main():
     print("hello world")
-    test_encoders()
+    test_colour_sensor()
     
 def test_distance_sensors():
     while True:
@@ -35,6 +35,11 @@ def test_encoders():
     while True:
         print(robot.encoder.get_distance_moved())
         time.sleep(5)
+
+def test_colour_sensor():
+    while True:
+        print(robot.colour_sensor.detects_colour())
+        time.sleep(1)
 
 if __name__ == "__main__":
     main()
