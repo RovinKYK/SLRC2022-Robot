@@ -11,11 +11,11 @@ class Robot:
         self.right_motor = Motor(1,1,1)'''
 
         #self.compass = Compass()
-        self.encoder = Encoder(3)
+        '''self.encoder = Encoder(3)'''
         self.colour_sensor = ColourSensor(3,5,7)
 
         #self.front_dist_sensor = DistanceSensor()
-        self.left_dist_sensor = DistanceSensor(7,8)
+        '''self.left_dist_sensor = DistanceSensor(7,8)
         self.right_dist_sensor = DistanceSensor(37,38)
 
         self.left_IR1 = IRSensor(3)
@@ -27,7 +27,7 @@ class Robot:
         self.right_IR3 = IRSensor(12)
         self.right_IR4 = IRSensor(3)
 
-        self.curr_dir=0 # 0=north, 1=east, 2=south, 3=west   This will be useful for the grid areas
+        self.curr_dir=0 # 0=north, 1=east, 2=south, 3=west   This will be useful for the grid areas'''
 
     def move_forward(self, speed):
         self.left_motor.move_forward(speed)

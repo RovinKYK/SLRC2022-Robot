@@ -131,9 +131,12 @@ class ColourSensor:
         self.sel_pin2 = sel_pin2
         self.output_pin = output_pin
         
-        self.num_cycles = 10
+        self.lower_range = 700
+        self.upper_range = 12000
+        self.num_cycles = 10      
 
         IO.setmode(IO.BOARD)
+        IO.setwarnings(False)
         IO.setup(self.output_pin,IO.IN, pull_up_down=IO.PUD_UP)
         IO.setup(self.sel_pin1,IO.OUT)
         IO.setup(self.sel_pin2,IO.OUT)
@@ -166,14 +169,14 @@ class ColourSensor:
         duration = time.time() - start
         green = self.num_cycles / duration
         
-        if green<7000 and blue<7000 and red>12000:
+        print(red,green,blue)
+        if green<self.lower_range and blue<self.lower_range and red>self.upper_range:
             return 'Red'
-        elif red<12000 and  blue<12000 and green>12000:
+        elif red<self.lower_range and  blue<self.lower_range and green>self.upper_range:
             return 'Green'
-        elif green<7000 and red<7000 and blue>12000:
+        elif green<self.lower_range and red<self.lower_range and blue>self.upper_range:
             return 'Blue'
         else:
-        #elif red>10000 and green>10000 and blue>10000:
             return False
 
 

@@ -8,7 +8,7 @@ robot = Robot()
 ########################################################################
 
 def main():
-    print("hello world")
+    print("hello Kasun")
     test_colour_sensor()
     
 def test_distance_sensors():
