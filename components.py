@@ -33,7 +33,84 @@ class IRSensor:
         return int(not IO.input(self.pin))
 
 
-class Motor:
+class Motor():
+    def __init__(self, forward_pin, backward_pin):
+        self.forward_pin = forward_pin
+        self.backward_pin = backward_pin
+
+        self.frequency = 256
+        self.speed = 0.0
+        self.interval = 0.05
+        self.min_speed = 70
+        self.direction = "F"
+
+        IO.setwarnings(False)
+        IO.setmode(IO.BOARD)
+        IO.setup(forward_pin, IO.OUT)
+        IO.setup(backward_pin, IO.OUT)
+
+        self.forward = IO.PWM(forward_pin, self.frequency)
+        self.backward = IO.PWM(backward_pin, self.frequency)
+
+        def move_forward_smooth(self, max_speed):
+            self.backward.ChangeDutyCycle(0)
+            self.direction = "F"
+            
+            for speed in range(70,max_speed):
+                self.forward.ChangeDutyCycle(speed)
+                self.speed = speed
+                time.sleep(self.interval)
+
+        def move_backward_smooth(self, max_speed):
+            self.forward.ChangeDutyCycle(0)
+            self.direction = "B"
+            
+            for speed in range(70,max_speed):
+                self.backward.ChangeDutyCycle(speed)
+                self.speed = speed
+                time.sleep(self.interval)
+
+        def stop_smooth(self):
+            start_speed = self.speed
+
+            if self.direction == "F":
+                for speed in range(start_speed, self.min_speed,-1):
+                    self.forward.ChangeDutyCycle(speed)
+                    self.speed = speed
+                    time.sleep(self.interval)
+    
+            else:
+                for speed in range(start_speed, self.min_speed,-1):
+                    self.backward.ChangeDutyCycle(speed)
+                    self.speed = speed
+                    time.sleep(self.interval)
+            
+            self.stop()
+
+        def move_forward(self,speed):
+            self.backward.ChangeDutyCycle(0)
+            self.forward.ChangeDutyCycle(speed)
+            self.speed = speed
+            self.direction = "F"
+
+        def move_backward(self,speed):
+            self.forward.ChangeDutyCycle(0)
+            self.backward.ChangeDutyCycle(speed)
+            self.speed = speed
+            self.direction = "B"
+
+        def stop(self):
+            self.forward.ChangeDutyCycle(0)
+            self.backward.ChangeDutyCycle(0)
+            self.speed = 0
+
+        def shutdown(self):
+            self.forward.stop()   
+            self.backward.stop()
+        
+
+
+class RealMotor:
     def __init__(self, en_pin, forward_pin, backward_pin):
         self.en_pin = en_pin
         self.forward_pin = forward_pin
@@ -72,7 +149,8 @@ class Motor:
             time.sleep(self.interval)
 
     def stop_smooth(self):
-        for speed in range(speed,70,-1):
+        start_speed = self.speed
+        for speed in range(start_speed, self.min_speed,-1):
             self.pwm.ChangeDutyCycle(speed)
             self.speed = speed
             time.sleep(self.interval)
@@ -91,6 +169,7 @@ class Motor:
 
     def stop(self):
         self.pwm.ChangeDutyCycle(0)
+        self.speed = 0
 
     def shutdown(self):
         self.pwm.stop()
