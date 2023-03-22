@@ -285,3 +285,12 @@ class Encoder:
     def get_distance_moved(self):
         return self.distance_per_count * self.counter
     
+class PushButton():
+    def __init__(self, pin):
+        self.pin = pin
+        IO.setwarnings(False)
+        IO.setmode(IO.BOARD)
+        IO.setup(pin, IO.IN)
+
+    def button_pressed(self):
+        return int(IO.input(self.pin))

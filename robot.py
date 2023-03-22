@@ -27,6 +27,8 @@ class Robot:
         self.right_IR3 = IRSensor(12)
         self.right_IR4 = IRSensor(3)
 
+        self.push_button = PushButton(1)
+        
         self.curr_dir=0 # 0=north, 1=east, 2=south, 3=west   This will be useful for the grid areas'''
 
     def move_forward(self, speed):
