@@ -3,7 +3,7 @@ import time
 from qmc5883l import *
 
 class Compass:
-    def __init__(self):
+    def __init__(self, sda_pin, sdl_pin):
         self.sensor = QMC5883L(output_data_rate=ODR_100HZ)
         self.sensor.declination = -2.11
         self.initial_bearing
@@ -205,7 +205,9 @@ class DistanceSensor:
 
 
 class ColourSensor:
-    def __init__(self, sel_pin1, sel_pin2, output_pin):
+    def __init__(self, en_pin1, en_pin2, sel_pin1, sel_pin2, output_pin):
+        self.en_pin1 = en_pin1
+        self.en_pin2 = en_pin2
         self.sel_pin1 = sel_pin1
         self.sel_pin2 = sel_pin2
         self.output_pin = output_pin
@@ -217,8 +219,13 @@ class ColourSensor:
         IO.setmode(IO.BOARD)
         IO.setwarnings(False)
         IO.setup(self.output_pin,IO.IN, pull_up_down=IO.PUD_UP)
+        IO.setup(self.en_pin1,IO.OUT)
+        IO.setup(self.en_pin2,IO.OUT)
         IO.setup(self.sel_pin1,IO.OUT)
         IO.setup(self.sel_pin2,IO.OUT)
+
+        IO.output(self.en_pin1,IO.LOW)
+        IO.output(self.en_pin2,IO.HIGH)
 
     def detects_colour(self):
         IO.output(self.sel_pin1,IO.LOW)
@@ -284,7 +291,31 @@ class Encoder:
 
     def get_distance_moved(self):
         return self.distance_per_count * self.counter
-    
+
+class Encoder2:
+    def __init__(self, pin):
+        self.pin = pin
+        self.count = 0
+        self.prev_state = IO.input(pin)
+        self.distance_per_count = 2.522 * 10
+
+        IO.setmode(IO.BCM)
+        IO.setup(pin, IO.IN, pull_up_down=IO.PUD_UP)
+        IO.add_event_detect(pin, IO.BOTH, callback=self.increment)
+
+    def increment(self, channel):
+        self.state = IO.input(self.pin)
+        if self.prev_state == IO.HIGH and self.state == IO.LOW:
+            count += 1
+        self.prev_state = self.state
+
+    def reset_distance(self):
+        self.counter = 0
+
+    def get_distance_moved(self):
+        return self.distance_per_count * self.counter
+
+
 class PushButton():
     def __init__(self, pin):
         self.pin = pin

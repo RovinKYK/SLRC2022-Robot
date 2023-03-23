@@ -8,8 +8,7 @@ robot = Robot()
 ########################################################################
 
 def main():
-    print("hello Kasun")
-    test_colour_sensor()
+    test_motor()
     
 def test_distance_sensors():
     while True:
@@ -49,3 +48,6 @@ def test_colour_sensor():
 
 if __name__ == "__main__":
     main()
+
+def test_motor():
+    robot.move_forward(70)
