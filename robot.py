@@ -3,6 +3,7 @@ from components import *
 
 class Robot:
     def __init__(self):
+<<<<<<< HEAD
         '''self.left_motor = Motor(1,1,1)
         self.right_motor = Motor(1,1,1)
 
@@ -26,6 +27,29 @@ class Robot:
         '''self.left_dist_sensor = DistanceSensor(7,8)
         self.right_dist_sensor = DistanceSensor(37,38)
 
+=======
+        self.left_motor = Motor(15,16)
+        self.right_motor = Motor(11,13)
+
+        self.compass = Compass(3,5)
+        self.colour_sensor = ColourSensor(12,33,27,29,31)
+        self.encoder = Encoder()
+        self.push_button = PushButton()
+
+        self.front_middle_dist_sensor = DistanceSensor(38,32)
+        self.front_left_dist_sensor = DistanceSensor(40,28)
+        self.front_right_dist_sensor = DistanceSensor(37,26)
+        self.side_left_dist_sensor = DistanceSensor(36,24)
+        self.side_right_dist_sensor = DistanceSensor(35,23)
+
+        self.middle_IR = IRSensor(10)
+        self.inner_left_IR = IRSensor(8)
+        self.inner_right_IR = IRSensor(7)
+        self.outer_left_IR = IRSensor(18)
+        self.outer_right_IR = IRSensor(19)
+
+        #self.servo_motor
+>>>>>>> e7731df74b4b35c4ca2250f5adba807a2a2a28ba
         self.curr_dir=0 # 0=north, 1=east, 2=south, 3=west   This will be useful for the grid areas'''
 
     def move_forward(self, speed):

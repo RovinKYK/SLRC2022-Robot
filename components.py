@@ -3,7 +3,7 @@ import time
 from qmc5883l import *
 
 class Compass:
-    def __init__(self):
+    def __init__(self, sda_pin, sdl_pin):
         self.sensor = QMC5883L(output_data_rate=ODR_100HZ)
         self.sensor.declination = -2.11
         self.initial_bearing
@@ -33,7 +33,84 @@ class IRSensor:
         return int(not IO.input(self.pin))
 
 
-class Motor:
+class Motor():
+    def __init__(self, forward_pin, backward_pin):
+        self.forward_pin = forward_pin
+        self.backward_pin = backward_pin
+
+        self.frequency = 256
+        self.speed = 0.0
+        self.interval = 0.05
+        self.min_speed = 70
+        self.direction = "F"
+
+        IO.setwarnings(False)
+        IO.setmode(IO.BOARD)
+        IO.setup(forward_pin, IO.OUT)
+        IO.setup(backward_pin, IO.OUT)
+
+        self.forward = IO.PWM(forward_pin, self.frequency)
+        self.backward = IO.PWM(backward_pin, self.frequency)
+
+        def move_forward_smooth(self, max_speed):
+            self.backward.ChangeDutyCycle(0)
+            self.direction = "F"
+            
+            for speed in range(70,max_speed):
+                self.forward.ChangeDutyCycle(speed)
+                self.speed = speed
+                time.sleep(self.interval)
+
+        def move_backward_smooth(self, max_speed):
+            self.forward.ChangeDutyCycle(0)
+            self.direction = "B"
+            
+            for speed in range(70,max_speed):
+                self.backward.ChangeDutyCycle(speed)
+                self.speed = speed
+                time.sleep(self.interval)
+
+        def stop_smooth(self):
+            start_speed = self.speed
+
+            if self.direction == "F":
+                for speed in range(start_speed, self.min_speed,-1):
+                    self.forward.ChangeDutyCycle(speed)
+                    self.speed = speed
+                    time.sleep(self.interval)
+    
+            else:
+                for speed in range(start_speed, self.min_speed,-1):
+                    self.backward.ChangeDutyCycle(speed)
+                    self.speed = speed
+                    time.sleep(self.interval)
+            
+            self.stop()
+
+        def move_forward(self,speed):
+            self.backward.ChangeDutyCycle(0)
+            self.forward.ChangeDutyCycle(speed)
+            self.speed = speed
+            self.direction = "F"
+
+        def move_backward(self,speed):
+            self.forward.ChangeDutyCycle(0)
+            self.backward.ChangeDutyCycle(speed)
+            self.speed = speed
+            self.direction = "B"
+
+        def stop(self):
+            self.forward.ChangeDutyCycle(0)
+            self.backward.ChangeDutyCycle(0)
+            self.speed = 0
+
+        def shutdown(self):
+            self.forward.stop()   
+            self.backward.stop()
+        
+
+
+class RealMotor:
     def __init__(self, en_pin, forward_pin, backward_pin):
         self.en_pin = en_pin
         self.forward_pin = forward_pin
@@ -72,7 +149,8 @@ class Motor:
             time.sleep(self.interval)
 
     def stop_smooth(self):
-        for speed in range(speed,70,-1):
+        start_speed = self.speed
+        for speed in range(start_speed, self.min_speed,-1):
             self.pwm.ChangeDutyCycle(speed)
             self.speed = speed
             time.sleep(self.interval)
@@ -91,6 +169,7 @@ class Motor:
 
     def stop(self):
         self.pwm.ChangeDutyCycle(0)
+        self.speed = 0
 
     def shutdown(self):
         self.pwm.stop()
@@ -126,7 +205,9 @@ class DistanceSensor:
 
 
 class ColourSensor:
-    def __init__(self, sel_pin1, sel_pin2, output_pin):
+    def __init__(self, en_pin1, en_pin2, sel_pin1, sel_pin2, output_pin):
+        self.en_pin1 = en_pin1
+        self.en_pin2 = en_pin2
         self.sel_pin1 = sel_pin1
         self.sel_pin2 = sel_pin2
         self.output_pin = output_pin
@@ -138,8 +219,13 @@ class ColourSensor:
         IO.setmode(IO.BOARD)
         IO.setwarnings(False)
         IO.setup(self.output_pin,IO.IN, pull_up_down=IO.PUD_UP)
+        IO.setup(self.en_pin1,IO.OUT)
+        IO.setup(self.en_pin2,IO.OUT)
         IO.setup(self.sel_pin1,IO.OUT)
         IO.setup(self.sel_pin2,IO.OUT)
+
+        IO.output(self.en_pin1,IO.LOW)
+        IO.output(self.en_pin2,IO.HIGH)
 
     def detects_colour(self):
         IO.output(self.sel_pin1,IO.LOW)
@@ -205,4 +291,37 @@ class Encoder:
 
     def get_distance_moved(self):
         return self.distance_per_count * self.counter
-    
+
+class Encoder2:
+    def __init__(self, pin):
+        self.pin = pin
+        self.count = 0
+        self.prev_state = IO.input(pin)
+        self.distance_per_count = 2.522 * 10
+
+        IO.setmode(IO.BCM)
+        IO.setup(pin, IO.IN, pull_up_down=IO.PUD_UP)
+        IO.add_event_detect(pin, IO.BOTH, callback=self.increment)
+
+    def increment(self, channel):
+        self.state = IO.input(self.pin)
+        if self.prev_state == IO.HIGH and self.state == IO.LOW:
+            count += 1
+        self.prev_state = self.state
+
+    def reset_distance(self):
+        self.counter = 0
+
+    def get_distance_moved(self):
+        return self.distance_per_count * self.counter
+
+
+class PushButton():
+    def __init__(self, pin):
+        self.pin = pin
+        IO.setwarnings(False)
+        IO.setmode(IO.BOARD)
+        IO.setup(pin, IO.IN)
+
+    def button_pressed(self):
+        return int(IO.input(self.pin))

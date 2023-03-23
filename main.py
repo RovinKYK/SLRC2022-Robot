@@ -8,7 +8,11 @@ robot = Robot()
 ########################################################################
 
 def main():
+<<<<<<< HEAD
     test_IR_Sensor_Attay()
+=======
+    test_motor()
+>>>>>>> e7731df74b4b35c4ca2250f5adba807a2a2a28ba
     
 def test_distance_sensors():
     while True:
@@ -53,3 +57,6 @@ def test_colour_sensor():
 
 if __name__ == "__main__":
     main()
+
+def test_motor():
+    robot.move_forward(70)
