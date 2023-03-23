@@ -10,14 +10,6 @@ class Robot:
         self.colour_sensor = ColourSensor()
         self.right_motor = Motor(1,1,1)'''
 
-        #self.compass = Compass()
-        '''self.encoder = Encoder(3)'''
-        self.colour_sensor = ColourSensor(3,5,7)
-
-        #self.front_dist_sensor = DistanceSensor()
-        '''self.left_dist_sensor = DistanceSensor(7,8)
-        self.right_dist_sensor = DistanceSensor(37,38)
-
         self.left_IR1 = IRSensor(3)
         self.left_IR2 = IRSensor(5)
         self.left_IR3 = IRSensor(7)
@@ -25,7 +17,14 @@ class Robot:
         self.right_IR1 = IRSensor(10)
         self.right_IR2 = IRSensor(11)
         self.right_IR3 = IRSensor(12)
-        self.right_IR4 = IRSensor(3)
+        self.right_IR4 = IRSensor(13)
+        #self.compass = Compass()
+        '''self.encoder = Encoder(3)'''
+        #self.colour_sensor = ColourSensor(3,5,7)
+
+        #self.front_dist_sensor = DistanceSensor()
+        '''self.left_dist_sensor = DistanceSensor(7,8)
+        self.right_dist_sensor = DistanceSensor(37,38)
 
         self.curr_dir=0 # 0=north, 1=east, 2=south, 3=west   This will be useful for the grid areas'''
 

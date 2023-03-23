@@ -8,8 +8,7 @@ robot = Robot()
 ########################################################################
 
 def main():
-    print("hello Kasun")
-    test_colour_sensor()
+    test_IR_Sensor_Attay()
     
 def test_distance_sensors():
     while True:
@@ -20,7 +19,12 @@ def test_distance_sensors():
         print()
         time.sleep(1)
 
-def test_IR_Sensors():
+def test_Single_IR():
+    while True:
+        print(robot.left_IR1.detects_white())
+        time.sleep(0.1)
+
+def test_IR_Sensor_Attay():
     while True:
         print(robot.left_IR1.detects_white(),
             robot.left_IR2.detects_white(),
@@ -30,7 +34,7 @@ def test_IR_Sensors():
             robot.right_IR2.detects_white(),
             robot.right_IR3.detects_white(),
             robot.right_IR4.detects_white())
-        time.sleep(1)
+        time.sleep(0.1)
 
 def test_encoders():
     a=0
@@ -44,7 +48,7 @@ def test_encoders():
 
 def test_colour_sensor():
     while True:
-        print(robot.colour_sensor.detects_colour())
+        robot.colour_sensor.detects_colour()
         time.sleep(1)
 
 if __name__ == "__main__":

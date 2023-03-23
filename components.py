@@ -131,8 +131,8 @@ class ColourSensor:
         self.sel_pin2 = sel_pin2
         self.output_pin = output_pin
         
-        self.lower_range = 700
-        self.upper_range = 12000
+        self.lower_range = 300
+        self.upper_range = 350
         self.num_cycles = 10      
 
         IO.setmode(IO.BOARD)
