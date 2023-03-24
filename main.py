@@ -1,6 +1,7 @@
 from robot import Robot
 import time
 import RPi.GPIO as IO
+from components import *
 robot = Robot()
 
 #Helper functions for tasks
@@ -10,7 +11,31 @@ robot = Robot()
 def main():
     #test_distance_sensors()
     roobt=Robot()
-   
+    robot.move_distance(15)
+    robot.line_follow()
+    while colour_sensor.detects_colour()!='Blue':
+        robot.stop()
+        break
+    robot.run_line_maze_arena()
+    robot.move_distance(15)
+    robot.line_follow()
+    while colour_sensor.detects_colour()!='White':
+        robot.stop()
+        break
+    robot.run_cave_arena()
+    robot.line_follow()
+    while colour_sensor.detects_colour()!='White':
+        robot.stop()
+        break
+    robot.arrow_follow()
+    while colour_sensor.detects_colour()!='Blue':
+        robot.stop()
+        break
+    robot.line_follow()
+    while colour_sensor.detects_colour()!='White':
+        robot.stop()
+        break
+
 def test_distance_sensors():
     while True:
         a=robot.side_left_dist_sensor.get_distance()
