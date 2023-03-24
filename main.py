@@ -8,36 +8,33 @@ robot = Robot()
 ########################################################################
 
 def main():
-<<<<<<< HEAD
-    test_IR_Sensor_Attay()
-=======
-    test_motor()
->>>>>>> e7731df74b4b35c4ca2250f5adba807a2a2a28ba
-    
+    #test_distance_sensors()
+    roobt=Robot()
+   
 def test_distance_sensors():
     while True:
-        ld = robot.left_dist_sensor.get_distance()
-        rd = robot.right_dist_sensor.get_distance()
-        print("Left distance = ", ld)
-        print("Right distance = ", rd)
+        a=robot.side_left_dist_sensor.get_distance()
+        b=robot.front_left_dist_sensor.get_distance()
+        c=robot.front_middle_dist_sensor.get_distance()
+        d=robot.front_right_dist_sensor.get_distance()
+        e=robot.side_right_dist_sensor.get_distance()
+        print("Distances")
+        print(a," ",c,d,e)
         print()
         time.sleep(1)
 
 def test_Single_IR():
     while True:
-        print(robot.left_IR1.detects_white())
+        print(robot.middle_IR.detects_white())
         time.sleep(0.1)
 
 def test_IR_Sensor_Attay():
     while True:
-        print(robot.left_IR1.detects_white(),
-            robot.left_IR2.detects_white(),
-            robot.left_IR3.detects_white(),
-            robot.left_IR4.detects_white(),
-            robot.right_IR1.detects_white(),
-            robot.right_IR2.detects_white(),
-            robot.right_IR3.detects_white(),
-            robot.right_IR4.detects_white())
+        print(robot.outer_left_IR.detects_white(),
+            robot.inner_left_IR.detects_white(),
+            robot.middle_IR.detects_white(),
+            robot.inner_right_IR.detects_white(),
+            robot.outer_right_IR.detects_white())
         time.sleep(0.1)
 
 def test_encoders():
@@ -54,9 +51,9 @@ def test_colour_sensor():
     while True:
         robot.colour_sensor.detects_colour()
         time.sleep(1)
+def test_motor():
+    robot.move_forward(70)
 
 if __name__ == "__main__":
     main()
 
-def test_motor():
-    robot.move_forward(70)

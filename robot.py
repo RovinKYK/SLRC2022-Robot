@@ -3,44 +3,23 @@ from components import *
 
 class Robot:
     def __init__(self):
-<<<<<<< HEAD
-        '''self.left_motor = Motor(1,1,1)
-        self.right_motor = Motor(1,1,1)
+        '''self.left_motor = Motor(15,16)
+        self.right_motor = Motor(11,13)'''
 
-        self.compass = Compass()
-        self.colour_sensor = ColourSensor()
-        self.right_motor = Motor(1,1,1)'''
+        #self.compass = Compass(3,5)
+        #self.colour_sensor = ColourSensor(12,33,27,29,31)
+        #self.encoder = Encoder(7)
+        #self.push_button = PushButton()
+        self.inner_left_IR = IRSensor(27)
 
-        self.left_IR1 = IRSensor(3)
-        self.left_IR2 = IRSensor(5)
-        self.left_IR3 = IRSensor(7)
-        self.left_IR4 = IRSensor(8)
-        self.right_IR1 = IRSensor(10)
-        self.right_IR2 = IRSensor(11)
-        self.right_IR3 = IRSensor(12)
-        self.right_IR4 = IRSensor(13)
-        #self.compass = Compass()
-        '''self.encoder = Encoder(3)'''
-        #self.colour_sensor = ColourSensor(3,5,7)
-
-        #self.front_dist_sensor = DistanceSensor()
-        '''self.left_dist_sensor = DistanceSensor(7,8)
-        self.right_dist_sensor = DistanceSensor(37,38)
-
-=======
-        self.left_motor = Motor(15,16)
-        self.right_motor = Motor(11,13)
-
-        self.compass = Compass(3,5)
-        self.colour_sensor = ColourSensor(12,33,27,29,31)
-        self.encoder = Encoder()
-        self.push_button = PushButton()
-
+        '''self.front_middle_dist_sensor = DistanceSensor(38,32)
         self.front_middle_dist_sensor = DistanceSensor(38,32)
-        self.front_left_dist_sensor = DistanceSensor(40,28)
+        #self.front_left_dist_sensor = DistanceSensor(40,) #3=28
         self.front_right_dist_sensor = DistanceSensor(37,26)
         self.side_left_dist_sensor = DistanceSensor(36,24)
         self.side_right_dist_sensor = DistanceSensor(35,23)
+        '''
+        '''
 
         self.middle_IR = IRSensor(10)
         self.inner_left_IR = IRSensor(8)
@@ -49,7 +28,6 @@ class Robot:
         self.outer_right_IR = IRSensor(19)
 
         #self.servo_motor
->>>>>>> e7731df74b4b35c4ca2250f5adba807a2a2a28ba
         self.curr_dir=0 # 0=north, 1=east, 2=south, 3=west   This will be useful for the grid areas'''
 
     def move_forward(self, speed):

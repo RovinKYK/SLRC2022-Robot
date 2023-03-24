@@ -52,61 +52,61 @@ class Motor():
         self.forward = IO.PWM(forward_pin, self.frequency)
         self.backward = IO.PWM(backward_pin, self.frequency)
 
-        def move_forward_smooth(self, max_speed):
-            self.backward.ChangeDutyCycle(0)
-            self.direction = "F"
-            
-            for speed in range(70,max_speed):
+    def move_forward_smooth(self, max_speed):
+        self.backward.ChangeDutyCycle(0)
+        self.direction = "F"
+        
+        for speed in range(70,max_speed):
+            self.forward.ChangeDutyCycle(speed)
+            self.speed = speed
+            time.sleep(self.interval)
+
+    def move_backward_smooth(self, max_speed):
+        self.forward.ChangeDutyCycle(0)
+        self.direction = "B"
+        
+        for speed in range(70,max_speed):
+            self.backward.ChangeDutyCycle(speed)
+            self.speed = speed
+            time.sleep(self.interval)
+
+    def stop_smooth(self):
+        start_speed = self.speed
+
+        if self.direction == "F":
+            for speed in range(start_speed, self.min_speed,-1):
                 self.forward.ChangeDutyCycle(speed)
                 self.speed = speed
                 time.sleep(self.interval)
 
-        def move_backward_smooth(self, max_speed):
-            self.forward.ChangeDutyCycle(0)
-            self.direction = "B"
-            
-            for speed in range(70,max_speed):
+        else:
+            for speed in range(start_speed, self.min_speed,-1):
                 self.backward.ChangeDutyCycle(speed)
                 self.speed = speed
                 time.sleep(self.interval)
+        
+        self.stop()
 
-        def stop_smooth(self):
-            start_speed = self.speed
+    def move_forward(self,speed):
+        self.backward.ChangeDutyCycle(0)
+        self.forward.ChangeDutyCycle(speed)
+        self.speed = speed
+        self.direction = "F"
 
-            if self.direction == "F":
-                for speed in range(start_speed, self.min_speed,-1):
-                    self.forward.ChangeDutyCycle(speed)
-                    self.speed = speed
-                    time.sleep(self.interval)
-    
-            else:
-                for speed in range(start_speed, self.min_speed,-1):
-                    self.backward.ChangeDutyCycle(speed)
-                    self.speed = speed
-                    time.sleep(self.interval)
-            
-            self.stop()
+    def move_backward(self,speed):
+        self.forward.ChangeDutyCycle(0)
+        self.backward.ChangeDutyCycle(speed)
+        self.speed = speed
+        self.direction = "B"
 
-        def move_forward(self,speed):
-            self.backward.ChangeDutyCycle(0)
-            self.forward.ChangeDutyCycle(speed)
-            self.speed = speed
-            self.direction = "F"
+    def stop(self):
+        self.forward.ChangeDutyCycle(0)
+        self.backward.ChangeDutyCycle(0)
+        self.speed = 0
 
-        def move_backward(self,speed):
-            self.forward.ChangeDutyCycle(0)
-            self.backward.ChangeDutyCycle(speed)
-            self.speed = speed
-            self.direction = "B"
-
-        def stop(self):
-            self.forward.ChangeDutyCycle(0)
-            self.backward.ChangeDutyCycle(0)
-            self.speed = 0
-
-        def shutdown(self):
-            self.forward.stop()   
-            self.backward.stop()
+    def shutdown(self):
+        self.forward.stop()   
+        self.backward.stop()
         
 
 
@@ -181,6 +181,7 @@ class DistanceSensor:
         self.echo_pin = echo_pin
 
         IO.setmode(IO.BOARD)
+        IO.setwarnings(False)
         IO.setup(self.trig_pin, IO.OUT)
         IO.setup(self.echo_pin, IO.IN)
 
@@ -194,10 +195,8 @@ class DistanceSensor:
         
         while IO.input(self.echo_pin) == 0:
             StartTime = time.time()
-    
         while IO.input(self.echo_pin) == 1:
             StopTime = time.time()
-    
         TimeElapsed = StopTime - StartTime
         distance = (TimeElapsed * 34300) / 2
     
@@ -272,7 +271,7 @@ class Encoder:
         self.debounce_time = 0.035
         self.distance_per_count = 2.522 * 10
 
-        IO.setmode(IO.BOARD)
+        IO.setmode(IO.BCM)
         IO.setup(pin, IO.IN)
 
         self.counter = 0
