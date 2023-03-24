@@ -72,6 +72,7 @@ class Robot:
             # read sensor values
             inner_left = self.left_IR2.detects_white()
             inner_right = self.right_IR2.detects_white()
+            middle = self.middle_IR.detects_white()
 
             # adjust motors based on sensor values
             if inner_left and not inner_right:
@@ -82,7 +83,7 @@ class Robot:
                 self.right_motor.move_backward(speed)
             if not inner_left and not inner_right:
                 self.move_forward(speed)
-            if inner_left and inner_right:
+            if (inner_left and inner_right) or middle:
                 self.stop()
                 break
     def arrow_follow(self, speed=80):
