@@ -1,20 +1,40 @@
 from robot import Robot
 import time
 import RPi.GPIO as IO
-robot = Robot()
 
+robot = Robot()
 #Helper functions for tasks
 
 ########################################################################
 
+def test_motor():
+    print("test1")
+    try:
+        for i in range(12,13):
+            print(i)
+            robot.left_motor.move_forward(i)
+            print("test1")
+            robot.right_motor.move_forward(i)
+            time.sleep(20)
+            print("done")
+    except Exception as e:
+        print(e)
+    finally:
+        robot.left_motor.stop()
+        robot.right_motor.stop()
+        print("All done")
+
 def main():
+    print("test2")
     #test_distance_sensors()
-    roobt=Robot()
-   
+    #test_IR_Sensor_Attay()
+    test_motor()
+
+
 def test_distance_sensors():
     while True:
         a=robot.side_left_dist_sensor.get_distance()
-        b=robot.front_left_dist_sensor.get_distance()
+        #b=robot.front_left_dist_sensor.get_distance()
         c=robot.front_middle_dist_sensor.get_distance()
         d=robot.front_right_dist_sensor.get_distance()
         e=robot.side_right_dist_sensor.get_distance()
@@ -51,8 +71,8 @@ def test_colour_sensor():
     while True:
         robot.colour_sensor.detects_colour()
         time.sleep(1)
-def test_motor():
-    robot.move_forward(70)
+#def test_motor():
+    #robot.move_forward(70)
 
 if __name__ == "__main__":
     main()

@@ -3,31 +3,27 @@ from components import *
 
 class Robot:
     def __init__(self):
-        '''self.left_motor = Motor(15,16)
-        self.right_motor = Motor(11,13)'''
+        self.left_motor = RealMotor(25,23,22) #22,16,15
+        self.right_motor = RealMotor(9,27,17) #21,13,11
 
-        #self.compass = Compass(3,5)
-        #self.colour_sensor = ColourSensor(12,33,27,29,31)
-        #self.encoder = Encoder(7)
-        #self.push_button = PushButton()
-        self.inner_left_IR = IRSensor(27)
+        #self.compass = Compass(2,3) #3,5
+        #self.colour_sensor = ColourSensor(18,13,0,5,6) #12,33,27,29,31
+        #self.encoder = Encoder(4) #7
+        #self.push_button = PushButton() #
 
-        '''self.front_middle_dist_sensor = DistanceSensor(38,32)
-        self.front_middle_dist_sensor = DistanceSensor(38,32)
-        #self.front_left_dist_sensor = DistanceSensor(40,) #3=28
-        self.front_right_dist_sensor = DistanceSensor(37,26)
-        self.side_left_dist_sensor = DistanceSensor(36,24)
-        self.side_right_dist_sensor = DistanceSensor(35,23)
-        '''
-        '''
+        self.front_middle_dist_sensor = DistanceSensor(20,12) #38,32
+        #self.front_left_dist_sensor = DistanceSensor(21,1) #40,28
+        self.front_right_dist_sensor = DistanceSensor(26,7) #37,26
+        self.side_left_dist_sensor = DistanceSensor(16,8) #36,24
+        self.side_right_dist_sensor = DistanceSensor(19,11) #35,23
 
-        self.middle_IR = IRSensor(10)
-        self.inner_left_IR = IRSensor(8)
-        self.inner_right_IR = IRSensor(7)
-        self.outer_left_IR = IRSensor(18)
-        self.outer_right_IR = IRSensor(19)
+        self.middle_IR = IRSensor(15) #10
+        self.inner_left_IR = IRSensor(14) #8
+        self.inner_right_IR = IRSensor(4) #7
+        self.outer_left_IR = IRSensor(24) #18
+        self.outer_right_IR = IRSensor(10) #19
 
-        #self.servo_motor
+        #self.servo_motor #
         self.curr_dir=0 # 0=north, 1=east, 2=south, 3=west   This will be useful for the grid areas'''
 
     def move_forward(self, speed):
@@ -224,7 +220,7 @@ class Robot:
                 self.stop()
                 break
 
-    
+
     def run_7_segment_number_constructing_arena(self):
         NumberEdges = {
             0: {"a": True, "b": True, "c": True, "d": True, "e": False, "f": True, "g": True},
