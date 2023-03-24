@@ -26,7 +26,7 @@ class IRSensor:
     def __init__(self, pin):
         self.pin = pin
         IO.setwarnings(False)
-        IO.setmode(IO.BOARD)
+        IO.setmode(IO.BCM)
         IO.setup(pin, IO.IN)
 
     def detects_white(self):
@@ -45,11 +45,11 @@ class Motor():
         self.direction = "F"
 
         IO.setwarnings(False)
-        IO.setmode(IO.BOARD)
+        IO.setmode(IO.BCM)
         IO.setup(forward_pin, IO.OUT)
         IO.setup(backward_pin, IO.OUT)
 
-        self.forward = IO.PWM(forward_pin, self.frequency)
+        #self.forward = IO.PWM(forward_pin, self.frequency)
         self.backward = IO.PWM(backward_pin, self.frequency)
 
     def move_forward_smooth(self, max_speed):
@@ -88,8 +88,9 @@ class Motor():
         self.stop()
 
     def move_forward(self,speed):
-        self.backward.ChangeDutyCycle(0)
-        self.forward.ChangeDutyCycle(speed)
+        IO.output(self.forward_pin, IO.HIGH)
+        '''self.backward.ChangeDutyCycle(0)'''
+        #self.forward.ChangeDutyCycle(speed)
         self.speed = speed
         self.direction = "F"
 
@@ -100,7 +101,8 @@ class Motor():
         self.direction = "B"
 
     def stop(self):
-        self.forward.ChangeDutyCycle(0)
+        #self.forward.ChangeDutyCycle(0)
+        IO.output(self.forward_pin, IO.LOW)
         self.backward.ChangeDutyCycle(0)
         self.speed = 0
 
@@ -122,7 +124,7 @@ class RealMotor:
         self.min_speed = 70
 
         IO.setwarnings(False)
-        IO.setmode(IO.BOARD)
+        IO.setmode(IO.BCM)
         IO.setup(en_pin, IO.OUT)
         IO.setup(forward_pin, IO.OUT)
         IO.setup(backward_pin, IO.OUT)
@@ -160,12 +162,12 @@ class RealMotor:
     def move_forward(self,speed):
         IO.output(self.forward_pin, IO.LOW)
         IO.output(self.backward_pin, IO.HIGH)
-        self.motorPWM.ChangeDutyCycle(speed)
+        self.pwm.ChangeDutyCycle(speed)
 
     def move_backward(self,speed):
         IO.output(self.forward_pin, IO.HIGH)
         IO.output(self.backward_pin, IO.LOW)
-        self.motorPWM.ChangeDutyCycle(speed)
+        self.pwm.ChangeDutyCycle(speed)
 
     def stop(self):
         self.pwm.ChangeDutyCycle(0)
@@ -180,7 +182,7 @@ class DistanceSensor:
         self.trig_pin = trig_pin
         self.echo_pin = echo_pin
 
-        IO.setmode(IO.BOARD)
+        IO.setmode(IO.BCM)
         IO.setwarnings(False)
         IO.setup(self.trig_pin, IO.OUT)
         IO.setup(self.echo_pin, IO.IN)
@@ -215,7 +217,7 @@ class ColourSensor:
         self.upper_range = 350
         self.num_cycles = 10      
 
-        IO.setmode(IO.BOARD)
+        IO.setmode(IO.BCM)
         IO.setwarnings(False)
         IO.setup(self.output_pin,IO.IN, pull_up_down=IO.PUD_UP)
         IO.setup(self.en_pin1,IO.OUT)
@@ -319,7 +321,7 @@ class PushButton():
     def __init__(self, pin):
         self.pin = pin
         IO.setwarnings(False)
-        IO.setmode(IO.BOARD)
+        IO.setmode(IO.BCM)
         IO.setup(pin, IO.IN)
 
     def button_pressed(self):
