@@ -38,6 +38,10 @@ class Robot:
         self.left_motor.move_backward(speed)
         self.right_motor.move_backward(speed)
 
+    def move_distance(self, distance, speed):
+        self.left_motor.move_forward(speed)
+        self.right_motor.move_forward(speed)
+
     def turn_left(self): # 90 degree turn
         self.left_motor.move_backward(70)
         self.right_motor.move_forward(70)
@@ -224,6 +228,19 @@ class Robot:
                 self.stop()
                 break
 
+        left_dist = self.left_dist_sensor.get_distance()
+        right_dist = self.right_dist_sensor.get_distance()
+        diff = left_dist - right_dist
+        if diff > 0:
+            self.turn_left()
+            self.move_distance(left_dist - 55/2)
+            self.turn_right()
+        else:
+            self.turn_right()
+            self.move_distance(right_dist - 55/2)
+            self.turn_left()
+        
+        self.move_distance(30)
     
     def run_7_segment_number_constructing_arena(self):
         NumberEdges = {
