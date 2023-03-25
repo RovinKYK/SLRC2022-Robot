@@ -10,7 +10,7 @@ robot = Robot()
 def test_motor():
     print("test1")
     try:
-        for i in range(12,13):
+        for i in range(20,21):
             print(i)
             robot.left_motor.move_forward(i)
             print("test1")
@@ -25,21 +25,31 @@ def test_motor():
         print("All done")
 
 def main():
-    print("test2")
-    #test_distance_sensors()
-    #test_IR_Sensor_Attay()
-    test_motor()
+    # test_distance_sensors()
+    while not robot.outer_left_IR.detects_white() and not robot.outer_right_IR.detects_white():
+        robot.move_forward(25)
+    robot.stop()
+    robot.initial_line_follow(25)
+    
+    #robot.turn_left(21,1)
+    #robot.line_follow()
+    # test_IR_Sensor_Attay()
+    #test_motor()
+    # print(robot.initial_line_follow(22))
+    # robot.run_line_maze_arena()
+    #test_colour_sensor()
+    #robot.run_line_maze_arena()
 
 
 def test_distance_sensors():
     while True:
         a=robot.side_left_dist_sensor.get_distance()
-        #b=robot.front_left_dist_sensor.get_distance()
+        b=robot.front_left_dist_sensor.get_distance()
         c=robot.front_middle_dist_sensor.get_distance()
         d=robot.front_right_dist_sensor.get_distance()
         e=robot.side_right_dist_sensor.get_distance()
         print("Distances")
-        print(a," ",c,d,e)
+        print(a,b,c,d,e)
         print()
         time.sleep(1)
 
@@ -70,7 +80,7 @@ def test_encoders():
 def test_colour_sensor():
     while True:
         robot.colour_sensor.detects_colour()
-        time.sleep(1)
+        time.sleep(0.1)
 #def test_motor():
     #robot.move_forward(70)
 
