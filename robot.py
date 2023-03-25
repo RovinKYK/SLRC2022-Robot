@@ -6,13 +6,13 @@ class Robot:
         self.left_motor = RealMotor(25,23,22) #22,16,15
         self.right_motor = RealMotor(9,27,17) #21,13,11
 
-        #self.compass = Compass(2,3) #3,5
-        #self.colour_sensor = ColourSensor(18,13,0,5,6) #12,33,27,29,31
+        self.compass = Compass() #2,3 -> 3,5
+        self.colour_sensor = ColourSensor(18,13,0,5,6) #12,33,27,29,31
         #self.encoder = Encoder(4) #7
         #self.push_button = PushButton() #
 
         self.front_middle_dist_sensor = DistanceSensor(20,12) #38,32
-        #self.front_left_dist_sensor = DistanceSensor(21,1) #40,28
+        self.front_left_dist_sensor = DistanceSensor(21,1) #40,28
         self.front_right_dist_sensor = DistanceSensor(26,7) #37,26
         self.side_left_dist_sensor = DistanceSensor(16,8) #36,24
         self.side_right_dist_sensor = DistanceSensor(19,11) #35,23
@@ -26,6 +26,7 @@ class Robot:
         #self.servo_motor
         self.curr_dir=0 # 0=north, 1=east, 2=south, 3=west   This will be useful for the grid areas
         self.visited=[20]
+        self.speed=20
 
     def move_forward(self, speed):
         self.left_motor.move_forward(speed)
@@ -39,17 +40,17 @@ class Robot:
         self.left_motor.move_forward(speed)
         self.right_motor.move_forward(speed)
 
-    def turn_left(self): # 90 degree turn
-        self.left_motor.move_backward(70)
-        self.right_motor.move_forward(70)
-        time.sleep(1.5)
+    def turn_left(self,speed=21,sleep_time=1): # 90 degree turn
+        self.left_motor.move_backward(speed)
+        self.right_motor.move_forward(speed)
+        time.sleep(sleep_time)
         self.left_motor.stop()
         self.right_motor.stop()
 
-    def turn_right(self): # 90 degree turn
-        self.left_motor.move_forward(70)
-        self.right_motor.move_backward(70)
-        time.sleep(1.5)
+    def turn_right(self,speed=21,sleep_time=1): # 90 degree turn
+        self.left_motor.move_forward(speed)
+        self.right_motor.move_backward(speed)
+        time.sleep(sleep_time)
         self.left_motor.stop()
         self.right_motor.stop()
 
@@ -63,72 +64,114 @@ class Robot:
         time.sleep(1.5)
         self.left_motor.stop()
         self.right_motor.stop()
-
-    def line_follow(self, speed=80):
+    def initial_line_follow(self,speed=25):
+        t=time.time()
         while True:
             # read sensor values
             inner_left = self.inner_left_IR.detects_white()
             inner_right =self.inner_right_IR.detects_white()
             outer_left = self.outer_left_IR.detects_white()
             outer_right = self.outer_right_IR.detects_white()
-            middle = self.middle_IR.detects_white()
+            if time.time()-t>2:
+                if outer_left or outer_right:
+                    return
+            if inner_left and not inner_right:
+                self.left_motor.move_backward(speed)
+                self.right_motor.move_forward(speed)
+            if not inner_left and inner_right:
+                self.left_motor.move_forward(speed)
+                self.right_motor.move_backward(speed)
+            else:
+                self.move_forward(speed)
+    def line_follow(self, speed=25):
+        paths=[]
+        time=time.time()
+        while True:
+            # read sensor values
+            inner_left = self.inner_left_IR.detects_white()
+            inner_right =self.inner_right_IR.detects_white()
+            outer_left = self.outer_left_IR.detects_white()
+            outer_right = self.outer_right_IR.detects_white()
+            middle = not self.middle_IR.detects_white()
 
             # adjust motors based on sensor values
             # left 1
             # right 2
             # left and right 3
             # right and left 4
-            # dead end 5
-            if outer_left:
-                while True:
-                    outer_left = self.outer_left_IR.detects_white()
-                    outer_right = self.outer_right_IR.detects_white()
-                    colour=self.colour_sensor.detects_colour()
-                    if colour=='Blue':
-                        self.stop()
-                        return 6
-                    if colour=='Red':
-                        self.stop()
-                        return 7
-                    if colour=='Green':
-                        self.stop()
-                        return 8
-                    if outer_right:
-                        self.stop()
-                        return 3
-                    if not outer_left:
-                        self.stop()
-                        return 1
-                    self.move_forward(speed)
-            if outer_right:
-                while True:
-                    outer_left = self.outer_left_IR.detects_white()
-                    outer_right = self.outer_right_IR.detects_white()
-                    colour=self.colour_sensor.detects_colour()
-                    if colour=='Blue':
-                        self.stop()
-                        return 6
-                    if colour=='Red':
-                        self.stop()
-                        return 7
-                    if colour=='Green':
-                        self.stop()
-                        return 8
-                    if outer_left:
-                        self.stop()
-                        return 4
-                    if not outer_right:
-                        self.stop()
-                        return 2
-                    self.move_forward(speed)
-            if not middle:
+            # right and left and top 5
+            # left and right and top 6
+            # dead end 7
+            if time.time()-time>1.5:
+                if outer_left:
+                    t = time.time()
+                    is_outer_right=False
+                    while True:
+                        outer_left = self.outer_left_IR.detects_white()
+                        outer_right = self.outer_right_IR.detects_white()
+                        if outer_right:
+                            is_outer_right=True
+                        if not outer_right or time.time()-t>0.1:
+                            colour="none"
+                            self.stop()
+                            while colour=="none":
+                                colour=self.colour_sensor.detects_colour()
+                                colour=self.colour_sensor.detects_colour()
+                                colour=self.colour_sensor.detects_colour()
+                                print(colour)
+                            if colour=="red":
+                                return 15
+                            if colour=="green" or colour=="blue":
+                                return paths
+                            paths.append((self.curr_dir-1)%4)
+                            if is_outer_right:
+                                paths.append((self.curr_dir+1)%4)   
+                            if colour=="white":
+                                paths.append(self.curr_dir)
+                            return paths 
+                        self.move_forward(speed)
+                if outer_right:
+                    t = time.time()
+                    is_outer_left=False
+                    while True:
+                        outer_left = self.outer_left_IR.detects_white()
+                        outer_right = self.outer_right_IR.detects_white()
+                        if outer_left:
+                            is_outer_left=True
+                        if not outer_right or time.time()-t>0.1:
+                            colour="none"
+                            self.stop()
+                            while colour=="none":
+                                colour=self.colour_sensor.detects_colour()
+                                colour=self.colour_sensor.detects_colour()
+                                colour=self.colour_sensor.detects_colour()
+                                print(colour)
+                            if colour=="red":
+                                return 15
+                            if colour=="green" or colour=="blue":
+                                return paths
+                            paths.append((self.curr_dir+1)%4)
+                            if is_outer_left:
+                                paths.append((self.curr_dir-1)%4)   
+                            if colour=="white":
+                                paths.append(self.curr_dir)
+                            return paths 
+                        self.move_forward(speed)
+            if not (middle or inner_left or inner_right):
                 self.stop()
-                return 5
+                return paths
             if inner_left and not inner_right:
                 self.left_motor.move_backward(speed)
                 self.right_motor.move_forward(speed)
-                
-    def arrow_follow(self, speed=80):
+            if not inner_left and inner_right:
+                self.left_motor.move_forward(speed)
+                self.right_motor.move_backward(speed)
+            else:
+                self.move_forward(speed)
+    def get_initial_paths(self,speed=25):
+        pass
+
+    def arrow_follow(self, speed=25):
         while True:
             # read sensor values
             inner_left = self.left_IR2.detects_white()
@@ -157,15 +200,10 @@ class Robot:
         if diff==2 or diff==-2:
             self.turn_right()
             self.turn_right()
-        self.encoder.reset()
-        self.line_follow(80)
-
+        self.line_follow(self.speed)
         # Move till the robot is in middle of the junction. calibrate exact values later
-        self.move_forward(80)
-        time.sleep(0.5)
-        self.stop()
         self.curr_dir=direction
-        return (self.encoder.get_distance_moved//35)      # returns the number of junctions travelled
+        # return (self.encoder.get_distance_moved//35)      # returns the number of junctions travelled
 
     def is_visited(self,current):      # this step won't be nessesary if there are no cycles in the maze
         destination=current+(-4 if self.curr_dir==0 else 1 if self.curr_dir==1 else 4 if self.curr_dir==2 else -1)
@@ -173,10 +211,27 @@ class Robot:
             return True
         return False
         
-    def turn_left_while_checking(self):
-        pass
-    def turn_right_while_checking(self):
-        pass
+    def turn_left_while_checking(self,speed=21):
+        t = time.time()
+        self.right_motor.move_backward(speed)
+        self.left_motor.move_forward(speed)
+        while time.time()-t<1:
+            if self.outer_left_IR.detects_white():
+                self.stop()
+                return True
+        self.stop()
+        return False
+    def turn_right_while_checking(self,speed=21):
+        t = time.time()
+        self.left_motor.move_backward(speed)
+        self.right_motor.move_forward(speed)
+        while time.time()-t<1:
+            if self.outer_right_IR.detects_white():
+                self.stop()
+                return True
+        self.stop()
+        return False
+    
 
     def run_line_maze_arena(self):
         # assuming that we start on middle of blue box facing west
@@ -187,53 +242,10 @@ class Robot:
         current=20
         last_status=0
         while True:
-            paths=[]   
-            if last_status==5:
-                for i in reversed(pathToLast):  
-                    self.maze_go((i-2)%4)
-                temp=turningPoints.pop()    # restore the state
-                current=temp[0]
-                pathToLast=temp[1]
-                paths=temp[2]
-                paths.pop(-1) 
-                continue    
-            # check the available paths
-            if last_status==1:
-                temp=self.turn_left_while_checking()
-                paths.append((self.curr_dir-1)%4)
-                if temp:
-                    paths.append(self.curr_dir)
-            if last_status==2:
-                temp=self.turn_right_while_checking()
-                paths.append((self.curr_dir+1)%4)
-                if temp:
-                    paths.append(self.curr_dir)
-            if last_status==3:
-                temp=self.turn_left_while_checking()
-                paths.append((self.curr_dir-1)%4)
-                paths.append((self.curr_dir+1)%4)
-                if temp:
-                    paths.append(self.curr_dir)
-            if last_status==4:
-                temp=self.turn_right_while_checking()
-                paths.append((self.curr_dir-1)%4)
-                paths.append((self.curr_dir+1)%4)
-                if temp:
-                    paths.append(self.curr_dir)
-            self.curr_dir=(self.curr_dir+1)%4
-            if self.left_IR1.detects_white() or self.right_IR1.detects_white():
-                if not self.is_visited(visited,current,self.curr_dir):
-                    paths.append(self.curr_dir)
-            self.turn_left()
-            self.curr_dir=(self.curr_dir-1)%4
-            if self.left_IR1.detects_white() or self.right_IR1.detects_white():
-                if not self.is_visited(visited,current,self.curr_dir):
-                    paths.append(self.curr_dir)
-            self.turn_left()
-            self.curr_dir=(self.curr_dir-1)%4
-            if self.left_IR1.detects_white() or self.right_IR1.detects_white():
-                paths.append(self.curr_dir)
-
+            paths=self.line_follow(self.speed)
+            print(paths)
+            if paths==15:
+                return
             if len(paths)==0: # if dead end, go back to the last turning point
                 for i in reversed(pathToLast):  
                     self.maze_go((i-2)%4)
@@ -248,7 +260,7 @@ class Robot:
                     pathToLast=[paths[-1]]
                 self.maze_go(paths[-1])
                 current=current+(-4 if self.curr_dir==0 else 1 if self.curr_dir==1 else 4 if self.curr_dir==2 else -1)
-                visited.append(current)
+                self.visited.append(current)
         
     def run_cave_arena(self):
         # read sensor values

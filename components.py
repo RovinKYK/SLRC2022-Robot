@@ -1,8 +1,29 @@
 import RPi.GPIO as IO
 import time
-from qmc5883l import *
+from i2c_hmc5883l import HMC5883
+ 
 
 class Compass:
+    def __init__(self):
+        self.sensor = HMC5883(gauss=4)
+        self.sensor.set_declination(-2, 0)
+
+    def set_initial_bearing(self):
+        self.initial_bearing = self.get_true_bearing()
+
+    def get_bearing(self):
+        relative_bearing = self.get_true_bearing() - self.initial_bearing
+        if relative_bearing < 0:
+            relative_bearing = 360 + relative_bearing
+            
+        return relative_bearing
+
+    def get_true_bearing(self):
+        deg, min = self.sensor.get_heading()
+        return deg
+
+
+class OldCompass:
     def __init__(self, sda_pin, sdl_pin):
         self.sensor = QMC5883L(output_data_rate=ODR_100HZ)
         self.sensor.declination = -2.11
@@ -225,10 +246,11 @@ class ColourSensor:
         IO.setup(self.sel_pin1,IO.OUT)
         IO.setup(self.sel_pin2,IO.OUT)
 
-        IO.output(self.en_pin1,IO.LOW)
-        IO.output(self.en_pin2,IO.HIGH)
+        IO.output(self.en_pin1,IO.HIGH)
+        IO.output(self.en_pin2,IO.LOW)
 
     def detects_colour(self):
+        #time.sleep(3)
         IO.output(self.sel_pin1,IO.LOW)
         IO.output(self.sel_pin2,IO.LOW)
         time.sleep(0.3)
@@ -257,15 +279,34 @@ class ColourSensor:
         green = self.num_cycles / duration
         
         print(red,green,blue)
-        if green<self.lower_range and blue<self.lower_range and red>self.upper_range:
+        '''if green<self.lower_range and blue<self.lower_range and red>self.upper_range:
             return 'Red'
         elif red<self.lower_range and  blue<self.lower_range and green>self.upper_range:
             return 'Green'
         elif green<self.lower_range and red<self.lower_range and blue>self.upper_range:
             return 'Blue'
         else:
-            return False
-
+            return False'''
+        
+        if red>3800 and green>3800 and blue>3800:
+            print("white")
+            return "white"
+        if red<2900 and green<2900 and blue<2900:
+            print("black")
+            return "black"
+        if blue>3800:
+            print("blue")
+            return "blue"
+        if green>2900 and blue>2900:
+            print("green")
+            return "green"
+        if red>3800:
+            print("red")
+            return "red"
+        else: 
+            print("none")
+            return "none"
+        
 
 class Encoder:
     def __init__(self, pin):
