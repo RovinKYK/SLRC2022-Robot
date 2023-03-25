@@ -169,8 +169,52 @@ class Robot:
             else:
                 self.move_forward(speed)
     def get_initial_paths(self,speed=25):
-        pass
-
+        paths=[]
+        t=time.time()
+        while True:
+            outer_left=self.outer_left_IR.detects_white()
+            outer_right=self.outer_right_IR.detects_white()
+            if outer_left and not outer_right:
+                self.left_motor.move_backward(speed)
+                self.right_motor.move_forward(speed)
+            elif not outer_left and outer_right:
+                self.left_motor.move_forward(speed)
+                self.right_motor.move_backward(speed)
+            elif outer_left and outer_right :
+                self.move_forward(speed)
+            else:
+                t=time.time()-t
+                colour="none"
+                self.stop()
+                while colour=="none":
+                    colour=self.colour_sensor.detects_colour()
+                    colour=self.colour_sensor.detects_colour()
+                    colour=self.colour_sensor.detects_colour()
+                if colour=="white":
+                    return
+                else:
+                    self.move_backward(speed)
+                    time.sleep(t/3)
+                    self.stop()
+                    self.turn_left()
+                    self.move_forward(speed)
+                    time.sleep(t/3)
+                    self.stop()
+                    colour="none"
+                    while colour=="none":
+                        colour=self.colour_sensor.detects_colour()
+                        colour=self.colour_sensor.detects_colour()
+                        colour=self.colour_sensor.detects_colour()
+                    if colour=="white":
+                        return
+                    else:
+                        self.turn_right()
+                        self.turn_right()
+                        self.move_forward(speed)
+                        time.sleep(t/3)
+                        self.stop()
+                        return 
+        
     def arrow_follow(self, speed=25):
         while True:
             # read sensor values
