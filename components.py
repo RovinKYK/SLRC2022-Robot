@@ -22,27 +22,6 @@ class Compass:
         deg, min = self.sensor.get_heading()
         return deg
 
-
-class OldCompass:
-    def __init__(self, sda_pin, sdl_pin):
-        self.sensor = QMC5883L(output_data_rate=ODR_100HZ)
-        self.sensor.declination = -2.11
-        self.initial_bearing
-
-    def set_initial_bearing(self):
-        self.initial_bearing = self.__get_true_bearing()
-
-    def get_bearing(self):
-        relative_bearing = self.__get_true_bearing() - self.initial_bearing
-        if relative_bearing < 0:
-            relative_bearing = 360 + relative_bearing
-            
-        return relative_bearing
-
-    def get_true_bearing(self):
-        return self.sensor.get_bearing()
-
-
 class IRSensor:
     def __init__(self, pin):
         self.pin = pin
@@ -53,87 +32,7 @@ class IRSensor:
     def detects_white(self):
         return int(not IO.input(self.pin))
 
-
-class Motor():
-    def __init__(self, forward_pin, backward_pin):
-        self.forward_pin = forward_pin
-        self.backward_pin = backward_pin
-
-        self.frequency = 256
-        self.speed = 0.0
-        self.interval = 0.05
-        self.min_speed = 70
-        self.direction = "F"
-
-        IO.setwarnings(False)
-        IO.setmode(IO.BCM)
-        IO.setup(forward_pin, IO.OUT)
-        IO.setup(backward_pin, IO.OUT)
-
-        #self.forward = IO.PWM(forward_pin, self.frequency)
-        self.backward = IO.PWM(backward_pin, self.frequency)
-
-    def move_forward_smooth(self, max_speed):
-        self.backward.ChangeDutyCycle(0)
-        self.direction = "F"
-        
-        for speed in range(70,max_speed):
-            self.forward.ChangeDutyCycle(speed)
-            self.speed = speed
-            time.sleep(self.interval)
-
-    def move_backward_smooth(self, max_speed):
-        self.forward.ChangeDutyCycle(0)
-        self.direction = "B"
-        
-        for speed in range(70,max_speed):
-            self.backward.ChangeDutyCycle(speed)
-            self.speed = speed
-            time.sleep(self.interval)
-
-    def stop_smooth(self):
-        start_speed = self.speed
-
-        if self.direction == "F":
-            for speed in range(start_speed, self.min_speed,-1):
-                self.forward.ChangeDutyCycle(speed)
-                self.speed = speed
-                time.sleep(self.interval)
-
-        else:
-            for speed in range(start_speed, self.min_speed,-1):
-                self.backward.ChangeDutyCycle(speed)
-                self.speed = speed
-                time.sleep(self.interval)
-        
-        self.stop()
-
-    def move_forward(self,speed):
-        IO.output(self.forward_pin, IO.HIGH)
-        '''self.backward.ChangeDutyCycle(0)'''
-        #self.forward.ChangeDutyCycle(speed)
-        self.speed = speed
-        self.direction = "F"
-
-    def move_backward(self,speed):
-        self.forward.ChangeDutyCycle(0)
-        self.backward.ChangeDutyCycle(speed)
-        self.speed = speed
-        self.direction = "B"
-
-    def stop(self):
-        #self.forward.ChangeDutyCycle(0)
-        IO.output(self.forward_pin, IO.LOW)
-        self.backward.ChangeDutyCycle(0)
-        self.speed = 0
-
-    def shutdown(self):
-        self.forward.stop()   
-        self.backward.stop()
-        
-
-
-class RealMotor:
+class Motor:
     def __init__(self, en_pin, forward_pin, backward_pin):
         self.en_pin = en_pin
         self.forward_pin = forward_pin
@@ -279,14 +178,6 @@ class ColourSensor:
         green = self.num_cycles / duration
         
         print(red,green,blue)
-        '''if green<self.lower_range and blue<self.lower_range and red>self.upper_range:
-            return 'Red'
-        elif red<self.lower_range and  blue<self.lower_range and green>self.upper_range:
-            return 'Green'
-        elif green<self.lower_range and red<self.lower_range and blue>self.upper_range:
-            return 'Blue'
-        else:
-            return False'''
         
         if red>3800 and green>3800 and blue>3800:
             print("white")
