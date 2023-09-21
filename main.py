@@ -33,15 +33,6 @@ def main():
     robot.get_initial_paths()
     robot.run_line_maze_arena()
     
-    #robot.turn_left(21,1)
-    #robot.line_follow()
-    # test_IR_Sensor_Attay()
-    #test_motor()
-    # print(robot.initial_line_follow(22))
-    # robot.run_line_maze_arena()
-    #test_colour_sensor()
-    #robot.run_line_maze_arena()
-
 def test_compass():
     while True:
         print(robot.compass.get_true_bearing())
